@@ -291,7 +291,7 @@ def visual_specific_name(cls, img_bytes, tflite_score):
 # ── TFLite model ──────────────────────────────────────────────────────────────
 MODEL_PATH = BASE_DIR / "model" / "model.tflite"
 CLASSES    = ["aircraft", "drone", "helicopter", "military-vehicle", "naval"]
-PORT       = 8383
+PORT       = int(os.environ.get("PORT", 8383))
 
 print(f"Loading TFLite model: {MODEL_PATH}")
 interpreter = tf.lite.Interpreter(model_path=str(MODEL_PATH))
@@ -517,9 +517,10 @@ class Handler(SimpleHTTPRequestHandler):
 
 # ── Start ─────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    server = HTTPServer(("127.0.0.1", PORT), Handler)
+    bind = "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1"
+    server = HTTPServer((bind, PORT), Handler)
     print(f"\n{'='*50}")
-    print(f"  Defence CV ready at http://127.0.0.1:{PORT}")
+    print(f"  Defence CV ready at http://{bind}:{PORT}")
     print(f"  OpenRouter vision: {'ON (async /identify)' if OPENROUTER_KEY else 'OFF — heuristic only'}")
     print(f"  Press Ctrl+C to stop")
     print(f"{'='*50}\n")
