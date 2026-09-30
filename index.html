@@ -24,33 +24,10 @@
 
   <div class="intro-content">
 
-    <!-- Animated targeting emblem -->
+    <!-- ASTRA Logo -->
     <div class="intro-emblem">
-      <svg class="intro-emblem-rings" width="120" height="120" viewBox="0 0 120 120" fill="none">
-        <!-- outer dashed spinning ring -->
-        <circle class="ring-spin" cx="60" cy="60" r="54"
-          stroke="rgba(0,212,255,0.2)" stroke-width="1"
-          stroke-dasharray="6 10"/>
-        <!-- inner dashed ring reverse -->
-        <circle class="ring-spin-rev" cx="60" cy="60" r="42"
-          stroke="rgba(0,212,255,0.15)" stroke-width="1"
-          stroke-dasharray="3 14"/>
-      </svg>
-      <svg class="intro-emblem-core" width="72" height="72" viewBox="0 0 72 72" fill="none">
-        <circle cx="36" cy="36" r="28" stroke="#00d4ff" stroke-width="1.2" opacity="0.4"/>
-        <circle cx="36" cy="36" r="18" stroke="#00d4ff" stroke-width="1.5" opacity="0.7"/>
-        <circle cx="36" cy="36" r="5"  fill="#00d4ff"/>
-        <!-- crosshair -->
-        <line x1="36" y1="8"  x2="36" y2="18" stroke="#00d4ff" stroke-width="1.5"/>
-        <line x1="36" y1="54" x2="36" y2="64" stroke="#00d4ff" stroke-width="1.5"/>
-        <line x1="8"  y1="36" x2="18" y2="36" stroke="#00d4ff" stroke-width="1.5"/>
-        <line x1="54" y1="36" x2="64" y2="36" stroke="#00d4ff" stroke-width="1.5"/>
-        <!-- diagonal ticks -->
-        <line x1="20" y1="20" x2="25" y2="25" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
-        <line x1="52" y1="20" x2="47" y2="25" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
-        <line x1="20" y1="52" x2="25" y2="47" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
-        <line x1="52" y1="52" x2="47" y2="47" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
-      </svg>
+      <img src="astra_logo.jpeg" alt="ASTRA" class="intro-astra-logo"/>
+      <div class="intro-astra-label">ASTRA</div>
     </div>
 
     <!-- Title -->
@@ -99,14 +76,7 @@
   <aside class="sidebar">
     <div class="logo">
       <div class="logo-emblem">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <polygon points="16,2 30,10 30,22 16,30 2,22 2,10" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
-          <polygon points="16,7 25,12 25,20 16,25 7,20 7,12" fill="rgba(0,212,255,0.08)" stroke="#00d4ff" stroke-width="1"/>
-          <circle cx="16" cy="16" r="3" fill="#00d4ff"/>
-          <line x1="16" y1="7" x2="16" y2="13" stroke="#00d4ff" stroke-width="1"/>
-          <line x1="25" y1="12" x2="19.5" y2="15" stroke="#00d4ff" stroke-width="1"/>
-          <line x1="25" y1="20" x2="19.5" y2="17" stroke="#00d4ff" stroke-width="1"/>
-        </svg>
+        <img src="astra_logo.jpeg" alt="ASTRA" style="width:36px;height:36px;object-fit:contain;border-radius:4px;"/>
       </div>
       <div>
         <div class="logo-title">RAKSHA DRISHTI</div>
@@ -290,7 +260,7 @@
   </main>
 </div>
 
-<script src="app.js?v=3.3"></script>
+<script src="app.js?v=3.4"></script>
 <script>
 function enterApp() {
   const intro  = document.getElementById('intro-screen');
