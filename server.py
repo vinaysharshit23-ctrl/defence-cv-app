@@ -17,7 +17,9 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 BASE_DIR  = Path(__file__).parent
 _env_path = BASE_DIR / ".env"
 OPENROUTER_KEY = None
-if _env_path.exists():
+# Check environment variable first (Railway/production), then fall back to .env (local)
+OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY")
+if not OPENROUTER_KEY and _env_path.exists():
     for line in _env_path.read_text().splitlines():
         if line.startswith("OPENROUTER_API_KEY="):
             OPENROUTER_KEY = line.split("=", 1)[1].strip()
