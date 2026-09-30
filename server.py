@@ -17,7 +17,9 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 BASE_DIR  = Path(__file__).parent
 _env_path = BASE_DIR / ".env"
 OPENROUTER_KEY = None
-if _env_path.exists():
+# Check environment variable first (Railway/production), then fall back to .env (local)
+OPENROUTER_KEY = os.environ.get("OPENROUTER_API_KEY")
+if not OPENROUTER_KEY and _env_path.exists():
     for line in _env_path.read_text().splitlines():
         if line.startswith("OPENROUTER_API_KEY="):
             OPENROUTER_KEY = line.split("=", 1)[1].strip()
@@ -98,10 +100,15 @@ def openrouter_identify(img_bytes):
     if not OPENROUTER_KEY:
         return None
     try:
-        img_b64 = base64.b64encode(img_bytes).decode()
+        # Always convert to JPEG for OpenRouter -- Azure backend rejects WEBP/BMP/MPO
         img_obj = Image.open(io.BytesIO(img_bytes))
-        fmt = (img_obj.format or "JPEG").lower()
-        mime = f"image/{fmt}" if fmt in ("jpeg", "png", "webp", "gif") else "image/jpeg"
+        if img_obj.mode in ("RGBA", "P", "LA"):
+            img_obj = img_obj.convert("RGB")
+        buf = io.BytesIO()
+        img_obj.save(buf, format="JPEG", quality=90)
+        img_bytes_clean = buf.getvalue()
+        img_b64 = base64.b64encode(img_bytes_clean).decode()
+        mime = "image/jpeg"
         messages = build_identify_messages(img_b64, mime)
 
         results = {}  # model -> name
