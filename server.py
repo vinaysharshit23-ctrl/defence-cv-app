@@ -98,10 +98,15 @@ def openrouter_identify(img_bytes):
     if not OPENROUTER_KEY:
         return None
     try:
-        img_b64 = base64.b64encode(img_bytes).decode()
+        # Always convert to JPEG for OpenRouter -- Azure backend rejects WEBP/BMP/MPO
         img_obj = Image.open(io.BytesIO(img_bytes))
-        fmt = (img_obj.format or "JPEG").lower()
-        mime = f"image/{fmt}" if fmt in ("jpeg", "png", "webp", "gif") else "image/jpeg"
+        if img_obj.mode in ("RGBA", "P", "LA"):
+            img_obj = img_obj.convert("RGB")
+        buf = io.BytesIO()
+        img_obj.save(buf, format="JPEG", quality=90)
+        img_bytes_clean = buf.getvalue()
+        img_b64 = base64.b64encode(img_bytes_clean).decode()
+        mime = "image/jpeg"
         messages = build_identify_messages(img_b64, mime)
 
         results = {}  # model -> name
