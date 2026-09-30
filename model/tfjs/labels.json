@@ -1,0 +1,16 @@
+{
+  "classes": [
+    "aircraft",
+    "drone",
+    "helicopter",
+    "military-vehicle",
+    "naval"
+  ],
+  "class_to_idx": {
+    "aircraft": 0,
+    "drone": 1,
+    "helicopter": 2,
+    "military-vehicle": 3,
+    "naval": 4
+  }
+}
