@@ -261,11 +261,27 @@ async function sendCanvas(canvas) {
 function drawHUD(source, results) {
   const canvas = document.getElementById('overlay-canvas');
   const ctx    = canvas.getContext('2d');
-  const w = source.naturalWidth  || source.videoWidth  || source.width  || 400;
-  const h = source.naturalHeight || source.videoHeight || source.height || 300;
-  const rect = source.getBoundingClientRect ? source.getBoundingClientRect() : { width: w, height: h };
-  canvas.width  = rect.width  || w;
-  canvas.height = rect.height || h;
+
+  // Use the rendered display size of the image/video, not its natural resolution
+  const rect = source.getBoundingClientRect ? source.getBoundingClientRect() : null;
+  const displayW = rect ? rect.width  : (source.videoWidth  || source.naturalWidth  || 400);
+  const displayH = rect ? rect.height : (source.videoHeight || source.naturalHeight || 300);
+
+  canvas.width  = displayW;
+  canvas.height = displayH;
+
+  // Position the canvas exactly over the image within the container
+  const container = document.getElementById('canvas-container');
+  const containerRect = container ? container.getBoundingClientRect() : null;
+  if (rect && containerRect) {
+    canvas.style.top    = (rect.top  - containerRect.top)  + 'px';
+    canvas.style.left   = (rect.left - containerRect.left) + 'px';
+    canvas.style.width  = displayW + 'px';
+    canvas.style.height = displayH + 'px';
+  } else {
+    canvas.style.top = '0'; canvas.style.left = '0';
+    canvas.style.width = '100%'; canvas.style.height = '100%';
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const top = results[0];
