@@ -370,19 +370,7 @@ body {
   background: radial-gradient(ellipse at 50% 30%, rgba(0,212,255,0.05) 0%, transparent 65%);
   pointer-events: none;
 }
-/* corner brackets */
-.drop-zone::after {
-  content: '';
-  position: absolute;
-  inset: 10px;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  background:
-    linear-gradient(var(--bg2), var(--bg2)) padding-box,
-    linear-gradient(135deg, rgba(0,212,255,0.15), transparent 40%, transparent 60%, rgba(0,212,255,0.15)) border-box;
-  pointer-events: none;
-  transition: all 0.25s;
-}
+/* corner brackets removed -- was covering drop zone content */
 .drop-zone:hover, .drop-zone.drag-over {
   border-color: var(--accent);
   background: linear-gradient(135deg, rgba(0,212,255,0.04) 0%, rgba(13,17,23,0.9) 100%);
