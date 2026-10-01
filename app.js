@@ -293,17 +293,38 @@ function drawHUD(source, results) {
   ctx.fillStyle = cfg.color + '44';
   ctx.fillRect(0, barY, canvas.width * top.score, barH);
 
-  // Row 1: specific name + confidence %
+  // Row 1: specific name + category tag + confidence %
   ctx.font = 'bold 15px "Segoe UI",system-ui,sans-serif';
   ctx.fillStyle = cfg.color;
   ctx.textAlign = 'left';
   ctx.fillText(specificName, 10, barY + 20);
+  // Category pill after the name
+  const nameW = ctx.measureText(specificName).width;
+  const catTag = cfg.label.toUpperCase();
+  ctx.font = 'bold 9px "Segoe UI",system-ui,sans-serif';
+  const tagW = ctx.measureText(catTag).width + 10;
+  const tagX = 10 + nameW + 8;
+  const tagY = barY + 7;
+  const tagH = 16;
+  ctx.fillStyle = cfg.color + '33';
+  ctx.strokeStyle = cfg.color + '88';
+  ctx.lineWidth = 1;
+  const r2 = 3;
+  ctx.beginPath();
+  ctx.roundRect(tagX, tagY, tagW, tagH, r2);
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = cfg.color;
+  ctx.textAlign = 'left';
+  ctx.fillText(catTag, tagX + 5, tagY + 11);
+  // Confidence
+  ctx.font = 'bold 15px "Segoe UI",system-ui,sans-serif';
   const confText = `${Math.round(top.score * 100)}%`;
+  ctx.fillStyle = cfg.color;
   ctx.textAlign = 'right';
   ctx.fillText(confText, canvas.width - 8, barY + 20);
   ctx.textAlign = 'left';
 
-  // Row 2: category label
+  // Row 2: category label (keep as subtitle)
   ctx.font = '11px "Segoe UI",system-ui,sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.45)';
   ctx.fillText(cfg.label, 10, barY + 38);
@@ -398,10 +419,26 @@ function renderChips(results) {
     chip.style.opacity = r.score >= confidenceThreshold ? (isTop3 ? 1 : 0.35) : 0.25;
     if (!isTop3) chip.style.fontSize = '11px';
 
+    const categoryBadge = `<span style="
+      display:inline-block;
+      margin-left:7px;
+      padding:1px 7px;
+      border-radius:4px;
+      font-size:9px;
+      font-weight:600;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      background:${dotColor}22;
+      border:1px solid ${dotColor}66;
+      color:${dotColor};
+      vertical-align:middle;
+      line-height:1.6;
+    ">${cfg.label}</span>`;
+
     chip.innerHTML = `
       <span class="chip-dot" style="background:${dotColor}"></span>
       <span class="chip-label">
-        <strong>${specificName}</strong>
+        <strong>${specificName}</strong>${i === 0 ? categoryBadge : ''}
         <span style="font-size:${i===0?'10px':'9px'};opacity:${i===0?'0.75':'0.55'};display:block;line-height:1.5;margin-top:2px;white-space:normal">${subtitle}</span>
       </span>
       <span class="chip-conf" style="color:${i===0?'var(--accent)':'var(--text2)'}">${Math.round(r.score*100)}%</span>`;
