@@ -108,9 +108,12 @@ function loadFile(file) {
   const url = URL.createObjectURL(file);
   const img = document.getElementById('result-image');
   img.onload = async () => {
-    showCanvasWrapper(true);
-    img.style.display = 'block';
+    // Show the image immediately so it's laid out before drawHUD measures it
     document.getElementById('webcam-video').style.display = 'none';
+    img.style.display = 'block';
+    showCanvasWrapper(true);
+    // Let the browser paint one frame before running inference + drawHUD
+    await new Promise(r => requestAnimationFrame(r));
     try { await sendImageFile(file, img); }
     catch (e) { alert('Inference failed: ' + e.message); console.error(e); }
     showProcessing(false);
@@ -259,21 +262,27 @@ async function sendCanvas(canvas) {
 
 // ── Canvas HUD ─────────────────────────────────────────────────────────────────
 function drawHUD(source, results) {
+  // Defer until after the browser paints so getBoundingClientRect is reliable
+  requestAnimationFrame(() => _drawHUDNow(source, results));
+}
+
+function _drawHUDNow(source, results) {
   const canvas = document.getElementById('overlay-canvas');
   const ctx    = canvas.getContext('2d');
 
-  // Use the rendered display size of the image/video, not its natural resolution
+  // Measure the actual rendered image/video rect
   const rect = source.getBoundingClientRect ? source.getBoundingClientRect() : null;
-  const displayW = rect ? rect.width  : (source.videoWidth  || source.naturalWidth  || 400);
-  const displayH = rect ? rect.height : (source.videoHeight || source.naturalHeight || 300);
+  const displayW = (rect && rect.width  > 0) ? rect.width  : (source.videoWidth  || source.naturalWidth  || 400);
+  const displayH = (rect && rect.height > 0) ? rect.height : (source.videoHeight || source.naturalHeight || 300);
 
   canvas.width  = displayW;
   canvas.height = displayH;
 
-  // Position the canvas exactly over the image within the container
+  // Position canvas exactly over the image (accounts for letterbox offset inside container)
   const container = document.getElementById('canvas-container');
   const containerRect = container ? container.getBoundingClientRect() : null;
-  if (rect && containerRect) {
+  if (rect && containerRect && rect.width > 0) {
+    canvas.style.position = 'absolute';
     canvas.style.top    = (rect.top  - containerRect.top)  + 'px';
     canvas.style.left   = (rect.left - containerRect.left) + 'px';
     canvas.style.width  = displayW + 'px';
