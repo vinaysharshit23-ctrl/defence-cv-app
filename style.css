@@ -398,24 +398,25 @@ body {
   padding: 44px 40px;
   gap: 10px;
   text-align: center;
+  color: var(--text);
 }
 
 .drop-icon-wrap {
   width: 72px; height: 72px;
   border-radius: 50%;
   background: var(--accent-dim);
-  border: 1.5px solid rgba(0,212,255,0.25);
+  border: 1.5px solid rgba(0,229,255,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent);
   margin-bottom: 6px;
-  box-shadow: 0 0 24px rgba(0,212,255,0.1);
+  box-shadow: 0 0 28px rgba(0,229,255,0.15);
   transition: all 0.2s;
 }
 .drop-zone:hover .drop-icon-wrap {
-  background: rgba(0,212,255,0.15);
-  box-shadow: 0 0 32px rgba(0,212,255,0.2);
+  background: rgba(0,229,255,0.15);
+  box-shadow: 0 0 40px rgba(0,229,255,0.25);
   transform: translateY(-2px);
 }
 
@@ -424,10 +425,11 @@ body {
   font-weight: 600;
   color: var(--text);
 }
-.drop-link { color: var(--accent); }
+.drop-link { color: var(--accent); font-weight: 700; }
 .drop-sub {
   font-size: 12px;
   color: var(--text2);
+  letter-spacing: 0.5px;
 }
 .drop-hint-tags {
   display: flex;
