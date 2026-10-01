@@ -152,16 +152,18 @@
   <main class="main">
     <header class="topbar">
       <div class="topbar-left">
-        <div class="topbar-title">Defence Object Classification System</div>
-        <div class="topbar-sub">AI-powered military hardware identification</div>
+        <div class="topbar-title">
+          <span class="topbar-title-accent">RAKSHA</span> DRISHTI
+        </div>
+        <div class="topbar-sub">Defence Object Classification &amp; Intelligence System</div>
       </div>
       <div class="topbar-badges">
-        <span class="badge">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
-          GPT-4o Vision
+        <span class="badge badge-live">
+          <span class="badge-pulse"></span>
+          SYSTEM ONLINE
         </span>
-        <span class="badge">TFLite</span>
-        <span class="badge">MobileNetV2</span>
+        <span class="badge">GPT-4o Vision</span>
+        <span class="badge">TFLite · MobileNetV2</span>
       </div>
     </header>
 
@@ -172,20 +174,25 @@
         onclick="document.getElementById('file-input').click()">
         <div class="drop-inner">
           <div class="drop-icon-wrap">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="17 8 12 3 7 8"/>
-              <line x1="12" y1="3" x2="12" y2="15"/>
+            <!-- Targeting crosshair icon -->
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="22" cy="22" r="18" stroke-dasharray="4 3" opacity="0.4"/>
+              <circle cx="22" cy="22" r="9"/>
+              <circle cx="22" cy="22" r="2" fill="currentColor" stroke="none"/>
+              <line x1="22" y1="2" x2="22" y2="11"/>
+              <line x1="22" y1="33" x2="22" y2="42"/>
+              <line x1="2" y1="22" x2="11" y2="22"/>
+              <line x1="33" y1="22" x2="42" y2="22"/>
             </svg>
           </div>
-          <div class="drop-text">Drop an image here or <span class="drop-link">click to browse</span></div>
-          <div class="drop-sub">Supports JPG · PNG · WEBP · GIF</div>
+          <div class="drop-text">Drop image to identify · <span class="drop-link">browse files</span></div>
+          <div class="drop-sub">JPG · PNG · WEBP · GIF &nbsp;|&nbsp; Max 20 MB</div>
           <div class="drop-hint-tags">
-            <span class="hint-tag">Aircraft</span>
-            <span class="hint-tag">Helicopter</span>
-            <span class="hint-tag">Tank</span>
-            <span class="hint-tag">Naval</span>
-            <span class="hint-tag">Drone</span>
+            <span class="hint-tag">✈ Aircraft</span>
+            <span class="hint-tag">🚁 Helicopter</span>
+            <span class="hint-tag">🛡 Tank</span>
+            <span class="hint-tag">⚓ Naval</span>
+            <span class="hint-tag">🔭 Drone</span>
           </div>
         </div>
         <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFileSelect(event)" />
@@ -260,7 +267,7 @@
   </main>
 </div>
 
-<script src="app.js?v=202610011840.4"></script>
+<script src="app.js?v=202610011850.4"></script>
 <script>
 function enterApp() {
   const intro  = document.getElementById('intro-screen');
