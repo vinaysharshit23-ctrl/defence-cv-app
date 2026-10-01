@@ -208,6 +208,10 @@ async function sendImageFile(file, imgEl) {
         : id.specific_name;
       predictions[0].reason = id.reason || '';
       predictions[0].identified_by = id.identified_by;
+      // Override TFLite category if the server detected a mismatch (e.g. Apache classified as aircraft)
+      if (id.corrected_category) {
+        predictions[0].class = id.corrected_category;
+      }
       // Store AI's 2nd and 3rd guesses on predictions[1] and predictions[2]
       if (id.guess2) {
         predictions[1].ai_guess_name = id.guess2;

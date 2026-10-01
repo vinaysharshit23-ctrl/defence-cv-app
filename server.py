@@ -422,6 +422,117 @@ def run_tflite(img_bytes):
     )
     return results, pre_meta
 
+# ── Name → category correction ────────────────────────────────────────────────
+# TFLite Stage-1 sometimes misclassifies (e.g. Apache as "aircraft").
+# This lookup corrects the category label when GPT-4o returns a known name.
+_NAME_CATEGORY_MAP = {
+    # Helicopters -- most commonly misclassified as aircraft
+    "apache":          "helicopter",
+    "ah-64":           "helicopter",
+    "ah-64d":          "helicopter",
+    "ah-64e":          "helicopter",
+    "black hawk":      "helicopter",
+    "blackhawk":       "helicopter",
+    "uh-60":           "helicopter",
+    "uh-60l":          "helicopter",
+    "uh-60m":          "helicopter",
+    "chinook":         "helicopter",
+    "ch-47":           "helicopter",
+    "ch-53":           "helicopter",
+    "sikorsky":        "helicopter",
+    "mi-28":           "helicopter",
+    "mi-24":           "helicopter",
+    "mi-8":            "helicopter",
+    "hind":            "helicopter",
+    "havoc":           "helicopter",
+    "tiger":           "helicopter",
+    "nh90":            "helicopter",
+    "ah-1":            "helicopter",
+    "ah-1z":           "helicopter",
+    "viper":           "helicopter",
+    "dhruv":           "helicopter",
+    "alh":             "helicopter",
+    "lynx":            "helicopter",
+    "merlin":          "helicopter",
+    "seahawk":         "helicopter",
+    "puma":            "helicopter",
+    "super puma":      "helicopter",
+    "cougar":          "helicopter",
+    "fennec":          "helicopter",
+    "dauphin":         "helicopter",
+    # Fixed-wing aircraft
+    "f-22":            "aircraft",
+    "f-35":            "aircraft",
+    "f-16":            "aircraft",
+    "f/a-18":          "aircraft",
+    "f-15":            "aircraft",
+    "su-30":           "aircraft",
+    "su-27":           "aircraft",
+    "su-35":           "aircraft",
+    "su-57":           "aircraft",
+    "mig-29":          "aircraft",
+    "mig-21":          "aircraft",
+    "rafale":          "aircraft",
+    "typhoon":         "aircraft",
+    "eurofighter":     "aircraft",
+    "mirage":          "aircraft",
+    "jaguar":          "aircraft",
+    "tornado":         "aircraft",
+    "tejas":           "aircraft",
+    "a-10":            "aircraft",
+    "b-2":             "aircraft",
+    "b-52":            "aircraft",
+    "c-130":           "aircraft",
+    # Ground vehicles
+    "t-90":            "military-vehicle",
+    "t-72":            "military-vehicle",
+    "t-80":            "military-vehicle",
+    "t-14":            "military-vehicle",
+    "armata":          "military-vehicle",
+    "abrams":          "military-vehicle",
+    "m1a2":            "military-vehicle",
+    "leopard":         "military-vehicle",
+    "challenger":      "military-vehicle",
+    "leclerc":         "military-vehicle",
+    "arjun":           "military-vehicle",
+    "k2":              "military-vehicle",
+    "bradley":         "military-vehicle",
+    "stryker":         "military-vehicle",
+    "btr":             "military-vehicle",
+    "bmp":             "military-vehicle",
+    # Drones / UAVs
+    "reaper":          "drone",
+    "predator":        "drone",
+    "mq-9":            "drone",
+    "mq-1":            "drone",
+    "rq-4":            "drone",
+    "global hawk":     "drone",
+    "rq-170":          "drone",
+    "bayraktar":       "drone",
+    "tb2":             "drone",
+    "heron":           "drone",
+    "searcher":        "drone",
+    "shahed":          "drone",
+    "hermes":          "drone",
+    # Naval
+    "carrier":         "naval",
+    "destroyer":       "naval",
+    "frigate":         "naval",
+    "submarine":       "naval",
+    "cruiser":         "naval",
+    "corvette":        "naval",
+}
+
+def _category_for_name(name: str) -> str | None:
+    """Return corrected category string if the identified name implies a known category."""
+    if not name:
+        return None
+    low = name.lower()
+    for keyword, cat in _NAME_CATEGORY_MAP.items():
+        if keyword in low:
+            return cat
+    return None
+
 # ── HTTP handler ──────────────────────────────────────────────────────────────
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -503,7 +614,8 @@ class Handler(SimpleHTTPRequestHandler):
                         "reason": reason,
                         "guess2": guess2,
                         "guess3": guess3,
-                        "identified_by": "openrouter"
+                        "identified_by": "openrouter",
+                        "corrected_category": _category_for_name(name),
                     })
                 else:
                     # All OpenRouter models failed — fall back to heuristic
