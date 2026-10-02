@@ -218,11 +218,20 @@ def openrouter_identify(img_bytes):
 print(f"OpenRouter vision: {'enabled' if OPENROUTER_KEY else 'disabled (no OPENROUTER_API_KEY in .env)'}")
 
 def build_identify_messages(img_b64, mime):
-    """Build the messages array — just the image and prompt, no few-shot bias."""
-    return [{"role": "user", "content": [
-        {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{img_b64}"}},
-        {"type": "text",      "text": OR_PROMPT}
-    ]}]
+    """Build the messages array with a pre-analysis step to prevent T-90 defaults."""
+    return [
+        {"role": "user", "content": [
+            {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{img_b64}"}},
+            {"type": "text", "text": (
+                "Before identifying, answer these checks:\n"
+                "1. If this is a tank: Is the turret ROUNDED/HEMISPHERICAL (T-90/T-72) or FLAT-SIDED/ANGULAR/BOXY (Western MBT)?\n"
+                "2. If this is a tank: Are there ERA tile bricks on the turret front? (yes=Russian, no=likely Western)\n"
+                "3. If this is a tank: Are there turbine exhaust louvres (horizontal slats) on the rear deck? (yes=Abrams only)\n"
+                "4. If this is a tank: Is the turret top flat with large Chobham armour cheeks? (yes=Challenger 2)\n"
+                "Now identify the vehicle using these observations.\n\n"
+            ) + OR_PROMPT}
+        ]}
+    ]
 
 # ── Visual heuristic classifier (instant fallback) ────────────────────────────
 SPECIFIC_NAMES = {
